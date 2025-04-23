@@ -47,7 +47,6 @@ pv0 = edp + pp*((1.-e1)*e2);
 
 % Calculo del flujo
 pd = 84; % presion diastolica
-flujo(1) = 0;
 part(1) = 0; % presión arterial
 
 % Parámetros para simular la presión sistemica
@@ -69,15 +68,15 @@ for j = 2: 1500
     t1 = t(j);
     
     % Calculo del flujo
-    if (pv(j) > pd)
-        flujo(j) = (pv(j)-pd)/1;
-        % Actualizando el volumen en función del flujo
-        Vv(j) = Vv(j-1) - flujo(j)*delt;
-        part(j) = pd + flujo(j)*1*delt;
-    else
-        flujo(j) = 0;
-        part(j) = 0;
-    end
+%     if (pv(j) > pd)
+%         flujo(j) = (pv(j)-pd)/1;
+%         % Actualizando el volumen en función del flujo
+%         Vv(j) = Vv(j-1) - flujo(j)*delt;
+%         part(j) = pd + flujo(j)*1*delt;
+%     else
+%         flujo(j) = 0;
+%         part(j) = 0;
+%     end
     
     % Agregando la presión arterial se tiene
 
@@ -93,6 +92,7 @@ for j = 2: 1500
     else
         psa(j) = (pv(j) + csa*ra*psa(j-1)/(delt))*delt*rsa/(csa*ra*rsa + delt*(ra + rsa));
         flujo1(j) = (pv(j) - psa(j))/ra;
+        Vv(j) = Vv(j-1) - flujo1(j)*delt;
     end
     
     e1 = exp(-(t1/tc)^alpha);
@@ -103,8 +103,8 @@ figure('Position', [250, 125, 800, 600]);
 hold on
 plot(t, pv, 'DisplayName', 'Presion Ventricular');
 plot(t, Vv, 'DisplayName', 'Volumen Ventricular');
-plot(t, flujo, 'DisplayName', 'Flujo');
-plot(t, part, 'DisplayName', 'Presión Arterial');
+% plot(t, flujo, 'DisplayName', 'Flujo');
+% plot(t, part, 'DisplayName', 'Presión Arterial');
 grid on
 hold off
 
