@@ -1,0 +1,32 @@
+accesos deepl.com (Traductor)
+user:
+jivohi7307@cyluna.com
+pass:
+traduciendopechato
+
+Define en función al documento
+
+Esfigmomanometría
+Hemodinamica
+Lugar periferico Radial
+Lugar periferico Braquial
+Lugar periferico Femoral
+Tonometría de aplanamiento
+Cateterismo
+Presión Central
+Presión Aortica Central
+Presión Aortica Ascendente
+Eyección
+
+A que hace referencia
+Indice de aumento
+
+
+Define de forma general
+Sistole
+Diastole
+
+Responder en función al contexto del documento
+distensibilidad arterial
+función ventricular y arterial
+
