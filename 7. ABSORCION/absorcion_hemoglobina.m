@@ -1,20 +1,17 @@
-clc, clear;
-abs = load('absorvancia_solucion.txt');
-trans = load('transmitancia_solucion.txt');
-espectro = dlmread('espectro_absorp_hemoglobina.txt');
+clc, clear, close all;
+datos = readtable('medidas_hbo2_hb.csv');
 
-plot(abs);
-hold on
-plot(trans);
-hold off;
+head(datos);
+disp(head(datos));
 
-figure;
-lambda = espectro(1);
-hb02 = espectro(2);
-hb = espectro(3);
+lambda = datos.lambda;
+hbo2 = datos.Hb02;
+hb = datos.Hb;
 
-
-plot(lambda, hb02);
+plot(lambda, hbo2);
 hold on
 plot(lambda, hb);
+title("Oxihemoglobina, Hemoglobina vs lambda");
+xlabel("Lambda [nm]");
+ylabel("Epsilon [cm^-1/M]");
 hold off
