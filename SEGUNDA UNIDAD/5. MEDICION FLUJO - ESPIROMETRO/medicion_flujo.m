@@ -66,6 +66,8 @@ disp(["Promedio Expiraciones: ", prom_expiraciones]);
 
 disp(["Cantidad Inspiraciones: " cantidad_inspiraciones]);
 disp(["Cantidad Expiraciones: " cantidad_expiraciones]);
+
+
 % Calculo de la desviación estandar 
 
 desviacion_inspiraciones = 0;
