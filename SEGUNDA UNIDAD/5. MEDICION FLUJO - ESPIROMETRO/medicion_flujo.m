@@ -1,0 +1,113 @@
+clc, clear, close all;
+
+% Parámetros generales
+fs = 100;
+ts = 1/fs;
+
+
+flujo_offset = readmatrix('Prueba_Offset.csv', 'Delimiter',',');
+
+% 1. Offset del sensor
+% El rango de datos se obtiene desde la 2da fila hasta trasantepenultima
+flujo_offset = flujo_offset(2:6002, 2);
+
+% Valor de offset mediante la media
+offset = mean(flujo_offset);
+
+disp(["offset sensor: ", offset]);
+
+%  2. Resolución del sensor
+% Según la hoja de datos en: https://neulog.com/Downloads/NeuLog_Gu%C3%ADa_Usuario_Ver_6_16.pdf
+% Se establece 15 bits para el sensor y un rango de medición +- 10L/s
+
+n_bits = 14;
+rango_medicion = 20;
+
+res_sensor = rango_medicion/(2^n_bits);
+
+disp(["Resolución sensor: ", res_sensor, "L/s"])
+
+% 3. Respiración normal
+
+flujo_normal = readmatrix('Espino_Normal.csv', 'Delimiter', ',');
+flujo_normal = flujo_normal(2: 6002, 2);
+
+% flujo sin offset 
+flujo_normal = flujo_normal - offset;
+
+% Calculo del area, promedio de las inspiraciones y expiraciones
+area_inspiraciones = 0;
+area_expiraciones = 0;
+
+prom_inspiraciones = 0;
+prom_expiraciones = 0;
+
+cantidad_inspiraciones = 0;
+cantidad_expiraciones = 0;
+
+for i = 1:length(flujo_normal)
+    if flujo_normal(i) >= -offset
+        area_inspiraciones = area_inspiraciones + flujo_normal(i)*ts;
+        prom_inspiraciones = prom_inspiraciones + flujo_normal(i);
+        cantidad_inspiraciones = cantidad_inspiraciones + 1;
+    else
+        area_expiraciones = area_expiraciones + flujo_normal(i)*ts;
+        prom_expiraciones = prom_expiraciones + flujo_normal(i);
+        cantidad_expiraciones = cantidad_expiraciones + 1;
+    end
+end
+prom_inspiraciones = prom_inspiraciones/cantidad_inspiraciones;
+prom_expiraciones = prom_expiraciones/cantidad_expiraciones;
+
+disp(["Area Inspiraciones:" area_inspiraciones]);
+disp(["Area Expiraciones:" area_expiraciones]);
+disp(["Promedio Inspiraciones: ", prom_inspiraciones]);
+disp(["Promedio Expiraciones: ", prom_expiraciones]);
+
+disp(["Cantidad Inspiraciones: " cantidad_inspiraciones]);
+disp(["Cantidad Expiraciones: " cantidad_expiraciones]);
+% Calculo de la desviación estandar 
+
+desviacion_inspiraciones = 0;
+desviacion_expiraciones = 0;
+
+for i = 1 : length(flujo_normal)
+    if flujo_normal(i) >= -offset 
+        desviacion_inspiraciones = desviacion_inspiraciones + ((flujo_normal(i) - prom_inspiraciones)^2)/cantidad_inspiraciones;
+    else
+        desviacion_expiraciones = desviacion_expiraciones + ((flujo_normal(i) - prom_expiraciones)^2)/cantidad_expiraciones;
+    end
+end
+
+desviacion_inspiraciones = sqrt(desviacion_inspiraciones);
+desviacion_expiraciones = sqrt(desviacion_expiraciones);
+
+disp(["Desviación estandar Inspiraciones: ", desviacion_inspiraciones])
+disp(["Desviación estandar Expiraciones: ", desviacion_expiraciones])
+
+% 4. Flujo forzado
+
+flujo_forzado = readmatrix('Espino_Forzado.csv','Delimiter', ',');
+flujo_forzado = flujo_forzado(2:1002, 2);
+flujo_forzado = flujo_forzado*-1;
+
+area_expiracion_forzada = 0;
+for i = 1 : length(flujo_forzado)
+    area_expiracion_forzada = area_expiracion_forzada + flujo_forzado(i)*ts;
+end
+
+disp(["Area expiración forzada: ", area_expiracion_forzada]);
+
+figure;
+plot(flujo_forzado)
+
+
+% Graficas 
+
+% Vector de tiempo
+t_flujo_normal = 0 : ts : (length(flujo_normal) - 1)/fs;
+figure;
+plot(t_flujo_normal, flujo_normal);
+title("Flujo Normal - Espino")
+ylabel("Amplitud");
+xlabel("Tiempo [s]")

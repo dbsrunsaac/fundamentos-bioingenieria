@@ -1,5 +1,5 @@
 clc, clear, close all;
-% 1. Lectura de datos y separación
+% 1. Lectura de datos 
 data = readmatrix('espino-fotopletismografia.csv');
 
 % 2. Separación de valores
@@ -30,7 +30,7 @@ title("Señal - Muestra de 30seg");
 
 % 4. Filtro pasa altos butterworth
 t = 0 : 1/fs : length(datos_espino)/fs - 1/fs;
-fc = 0.05;
+fc = 1.5;
 wn = fc/(fs/2);
 [b, a] = butter(4, wn, 'high');
 datos_high = filtfilt(b, a, datos_espino);
@@ -54,7 +54,7 @@ title("Señal sin componente DC");
 
 % 7. Filtro pasa alto - Señal sin componente DC
 % 8. Variación en la frecuencia de corte para el filtro pasa alto
-fc = 0.3;
+fc = 5;
 wn = fc/(fs/2);
 [b, a] = butter(4, wn, 'high');
 datos_ac_high = filtfilt(b, a, datos_ac);
